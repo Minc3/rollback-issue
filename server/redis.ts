@@ -1,7 +1,8 @@
 import Redis from 'ioredis';
 
+const CONFIG = useRuntimeConfig();
+
 export const redis = new Redis({
-  const CONFIG = useRuntimeConfig();
   port: parseInt(CONFIG.REDIS_PORT),
   host: CONFIG.REDIS_HOST,
   password: CONFIG.REDIS_PASSWORD,
