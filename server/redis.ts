@@ -1,30 +1,38 @@
 import Redis from 'ioredis';
 
-const CONFIG = useRuntimeConfig();
+let redisInstance: Redis | null = null;
 
-export const redis = new Redis({
-  port: parseInt(CONFIG.REDIS_PORT),
-  host: CONFIG.REDIS_HOST,
-  password: CONFIG.REDIS_PASSWORD,
-  maxRetriesPerRequest: 3,
-});
+export function getRedis() {
+  if (!redisInstance) {
+    const config = useRuntimeConfig();
 
-redis.on('error', (error) => {
-  console.error('Redis connection error:', error);
-});
+    redisInstance = new Redis({
+      port: parseInt(config.REDIS_PORT),
+      host: config.REDIS_HOST,
+      password: config.REDIS_PASSWORD,
+      maxRetriesPerRequest: 3,
+    });
 
-redis.on('connect', () => {
-  console.log('Redis connected successfully');
-});
+    redisInstance.on('error', (error) => {
+      console.error('Redis connection error:', error);
+    });
 
-redis.on('ready', () => {
-  console.log('Redis ready to receive commands');
-});
+    redisInstance.on('connect', () => {
+      console.log('Redis connected successfully');
+    });
 
-redis.on('close', () => {
-  console.log('Redis connection closed');
-});
+    redisInstance.on('ready', () => {
+      console.log('Redis ready to receive commands');
+    });
 
-redis.on('reconnecting', () => {
-  console.log('Redis reconnecting...');
-});
+    redisInstance.on('close', () => {
+      console.log('Redis connection closed');
+    });
+
+    redisInstance.on('reconnecting', () => {
+      console.log('Redis reconnecting...');
+    });
+  }
+
+  return redisInstance;
+}

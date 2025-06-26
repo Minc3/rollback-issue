@@ -1,6 +1,8 @@
-import { redis } from '../redis';
+import { getRedis } from '../redis';
 
 export default defineEventHandler(async () => {
+  const redis = getRedis();
+
   try {
     await redis.get('nothing:');
     return 'redis is connected';
